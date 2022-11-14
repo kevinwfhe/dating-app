@@ -13,6 +13,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from profiles.forms import EditProfileForm, ProfileForm, ProfileImageForm, PersonalInformationForm
 from rest_framework.views import APIView
 from rest_framework import authentication, permissions
+import os
 
 # Account page for users to see and change Stripe and profile account details
 @login_required
@@ -26,7 +27,7 @@ def public_profile(request):
         
         formset = ImageFormSet(request.POST, request.FILES,
                               queryset=ProfileImage.objects.filter(user_id=request.user.id).all())
-        
+        print(os.environ.get("aws_secret_key"))
         # Update profile and change profile to 'to be approved'
         if profile_form.is_valid() and formset.is_valid():
             instance = profile_form.save(commit=False)

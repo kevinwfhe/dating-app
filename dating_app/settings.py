@@ -12,7 +12,9 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 
+load_dotenv('.env')
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -147,3 +149,10 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ]
 }
+
+DEFAULT_FILE_STORAGE = 'dating_app.custom_storage.MediaStorage'
+AWS_STORAGE_BUCKET_NAME = 'dating-app-profile-image'
+AWS_S3_REGION_NAME = 'us-east-1'
+AWS_ACCESS_KEY_ID = os.environ.get("aws_access_key")
+AWS_SECRET_ACCESS_KEY = os.environ.get("aws_secret_key")
+MEDIAFILES_LOCATION = 'profile-image'
