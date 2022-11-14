@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM python:3.10-alpine AS builder
+FROM python:3.10-alpine AS builder
 WORKDIR /app 
 COPY requirements.txt /app
 RUN apk add zlib-dev jpeg-dev gcc musl-dev
