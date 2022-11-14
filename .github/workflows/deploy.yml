@@ -12,7 +12,7 @@ env:
   AWS_REGION: us-east-1                    # set this to your preferred AWS region, e.g. us-west-1
   ECR_REPOSITORY: 044232640434.dkr.ecr.us-east-1.amazonaws.com/gng5300-dating-app       
                                               # set this to your Amazon ECR repository name
-  ECS_SERVICE: service1  # set this to your Amazon ECS service name
+  ECS_SERVICE: gng5300-dating-app  # set this to your Amazon ECS service name
   ECS_CLUSTER: cicd-cluster  # set this to your Amazon ECS cluster name
   ECS_TASK_DEFINITION: cicd-task
                                               # set this to the path to your Amazon ECS task definition
