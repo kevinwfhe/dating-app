@@ -1,0 +1,31 @@
+name: Build Image
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.10]
+
+    steps:
+    - name: Login Dockerhub
+      uses: docker/login-action@v1
+      with:
+        username: kevinwfhe
+        password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+        
+    - name: Build and push image
+      uses: docker/build-push-action@v2.10.0
+      with:
+        context: ${{ env.GITHUB_WORKSPACE }}
+        file: ${{ env.GITHUB_WORKSPACE }}/Dockerfile
+        tags: kevinwfhe/gng5300datingapp:latest
+        push: true
