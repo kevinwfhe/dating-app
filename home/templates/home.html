@@ -1,0 +1,254 @@
+{%extends 'base.html'%} {% load static from static %} {%block page_title%}Home{%endblock%} {%block content%}
+
+<!--Send message form modal-->
+<div class="modal fade" id="message-modal" tabindex="-1" role="dialog" aria-labelledby="message-modal-title" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="card-container">
+                <div class="card-form card">
+                    <button type="button" class="close modal-close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <div class="card-form-container">
+                        <h3 class="card-modal-title">Send Message</h3>
+                        <hr>
+                        <p class="card-form-subtitle">Start a conversation</p>
+                        <form class="standard-form not-profile-page-message-form" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="csrfmiddlewaretoken" value="{% csrf_token %}">
+                            <input id="message-receiver-id" type="hidden" value="">
+                            <textarea cols="40" maxlength="500" rows="10" required="" id="message-input"></textarea>
+                            <input type="submit" class="submit-success" name="message_submit" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal steps {% if not has_filled_profile %}show{% endif %}" data-bs-backdrop="static" tabindex="-1">
+  <div class="modal-dialog">
+    {% csrf_token %}
+    <input type="hidden" name="csrfmiddlewaretoken" value="{% csrf_token %}">
+    <div class="modal-content">
+      <div class="modal-header" id="step-indicator-ctn">
+        <span class="step-indicator filled"></span>
+        <span class="step-indicator"></span>
+        <span class="step-indicator"></span>
+        <span class="step-indicator"></span>
+        <span class="step-indicator"></span>
+      </div>
+      <div class="modal-body justify-content-center" id="step-content">
+        <h5 class="modal-title text-center" id="step-title">What's your age?</h5>
+        <div id="step-input">
+          <div class="input-group input-group-lg">
+            <input type="text" class="form-control" placeholder="Age" aria-label="age" onkeypress="return onlyNumberKey(event)">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-primary w-100" id="nextstep">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Swipe quick match section-->
+<div class="quick-match-container">
+    <div class="left-quick-match-message">
+        <div class="text">DRAG LEFT TO IGNORE</div>
+    </div>
+    <div id="droppable-left" class="ui-widget-header">
+    </div>
+    <h2 id="swipe-match-finder" class="quick-match-heading">SWIPE MATCH FINDER</h2>
+    <h3 class="quick-match-subheading">Find love the quick and easy way with the swipe match finder</h3>
+
+    <div class="card draggable-card draggable-reset-card" style="display: inline-block; position: absolute; z-index: 1 ; margin-left:-250px; margin-right:-250px; overflow: hidden">
+        <div>
+            {% if card_profiles_exists %}
+            <p>Keep on looking ;)</p>
+            <a class="draggable-reset-button btn standard-button">ADD MORE PROFILES</a> {% else %}
+            <p>No More Swipe Match Members Available :(</p>
+            {% endif %}
+        </div>
+    </div>
+
+
+    {% for profile in card_profiles %}
+    <div id="draggable-{{profile.user.id}}" class="card draggable-card draggable ui-widget-content">
+        {% if profile.user.profileimage_set.first.is_verified == "APPROVED" %}
+        <div class="card-img" style="background-image: url( {{ MEDIA_URL }}{{profile.user.profileimage_set.first.image}})"></div>
+        {% else %}
+        <div class="card-img" style="background-image: url({% static 'temp/profile-placeholder.png' %})"></div>
+        {% endif %}
+        <div class="row username-container">
+            <p class="col-9 card-username">{{profile.user.username}}</p>
+            <p class="col-3 card-age">{{profile.age}}</p>
+        </div>
+        <p class="card-distance">{%if profile.distance > 150 %}150KM+{%else%}{{profile.distance|floatformat:"0"}}KM{%endif%} Away</p>
+        <div class="row interaction-container">
+            <div class="col-4 grid-three-link"><i onclick="send_wink_draggable({{profile.user.id}}, false)" class="far fa-times-circle grid-times"></i></div>
+            <div class="col-4 grid-three-link"><a href="{% url 'member_profile' profile.user.id %}"><i class="far fa-user grid-view"></i></a></div>
+            <div class="col-4 grid-three-link"><i onclick="send_wink_draggable({{profile.user.id}}, true)" class="far fa-smile-wink grid-wink"></i></div>
+        </div>
+    </div>
+
+    <div>
+        <a class="draggable-view-profile draggable-{{profile.user.id}}" href="{% url 'member_profile' profile.user.id %}">
+            <p>VIEW {{profile.user.username | upper}}'S PROFILE</p>
+        </a>
+    </div>
+    {%endfor%}
+    <div class="right-quick-match-message">
+        <div class="text">DRAG RIGHT TO WINK</div>
+    </div>
+    <div id="droppable-right" class="ui-widget-header">
+    </div>
+</div>
+
+{%endblock%} {%block js%}
+<script>
+  let steps = 0;
+  const next = document.getElementById('nextstep')
+  const title = document.getElementById('step-title')
+  const indicator_ctn = document.getElementById('step-indicator-ctn')
+  const input_ctn = document.getElementById('step-input')
+  let age, loc, gender, relationship_status = undefined;
+  let interests = []
+  next.onclick = function() {
+    if(steps === 5) {
+      location.reload()
+      return
+    }
+    if(steps === 4) {
+      const checked = $('#step-input input:checkbox:checked').each((i, el) => {
+        interests.push(el.value)
+      })
+      const data = {
+        age,
+        loc,
+        gender,
+        relationship_status,
+        interests,
+      }
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value
+      postInitProfile(data, csrfToken).then((res) => {
+        title.innerText = "You're all set!"
+        next.innerText = "Done"
+        indicator_ctn.classList.add('hide')
+        input_ctn.innerHTML = `<p style="padding:0 5rem; text-align:center">Tips: Become our membership and the first date with your match will be on us!</p>`
+        steps += 1
+      })
+      return
+    }
+    if(steps === 0) {
+      age = input_ctn.getElementsByTagName('input')[0].value
+      try {
+        age = parseInt(age)
+      } catch(err) {
+        prompt("Please enter valid age in integer.")
+      }  
+      title.innerText = "Where are you?"
+      const ih = `<div class="input-group input-group-lg">
+            <input type="text" class="form-control" placeholder="Location" aria-label="Location" aria-describedby="basic-addon1">
+          </div>`
+      input_ctn.innerHTML = ih
+    }
+    else if(steps === 1) {
+      loc = input_ctn.getElementsByTagName('input')[0].value
+      title.innerText = "How do you identify?"
+      const ih = `<div class="form-check">
+        <input class="form-check-input" type="radio" name="gender" id="female" value="female" checked>
+        <label class="form-check-label" for="female">Female</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="gender" id="male" value="male">
+        <label class="form-check-label" for="male">Male</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="gender" id="other" value="other">
+        <label class="form-check-label" for="other">Others</label>
+      </div>`
+      input_ctn.innerHTML = ih
+    }
+    else if(steps === 2) {
+      gender = $('#step-input input:radio:checked').val()
+      title.innerText = "You are currently"
+      const ih = `<div class="form-check">
+        <input class="form-check-input" type="radio" name="status" id="single" value="single" checked>
+        <label class="form-check-label" for="single">Single</label>
+      </div>
+        <div class="form-check">
+        <input class="form-check-input" type="radio" name="status" id="in-relationship" value="in-relationship">
+        <label class="form-check-label" for="in-relationship">In relationship</label>
+      </div>`
+      input_ctn.innerHTML = ih
+    }
+    else if(steps === 3) {
+      relationship_status = $('#step-input input:radio:checked').val()
+      title.innerText = "You are interested in"
+      const line1 = `<div class="form-check form-check-inline">
+        <input type="checkbox" class="btn-check" id="sport" value="1" autocomplete="off">
+        <label class="btn btn-outline-primary" for="sport">Sport</label>
+        <input type="checkbox" class="btn-check" id="photography" value="2" autocomplete="off">
+        <label class="btn btn-outline-primary" for="photography">Photography</label>
+      </div>`
+      const line2 = `<div class="form-check form-check-inline">
+        <input type="checkbox" class="btn-check" id="health" value="3" autocomplete="off">
+        <label class="btn btn-outline-primary" for="health">Health</label>
+        <input type="checkbox" class="btn-check" id="music" value="4" autocomplete="off">
+        <label class="btn btn-outline-primary" for="music">Music</label>
+        <input type="checkbox" class="btn-check" id="cat-dog" value="5" autocomplete="off">
+        <label class="btn btn-outline-primary" for="cat-dog">Cat&Dog</label>
+      </div>`
+      const line3 = `<div class="form-check form-check-inline">
+        <input type="checkbox" class="btn-check" id="game" value="6" autocomplete="off">
+        <label class="btn btn-outline-primary" for="game">Game</label>
+        <input type="checkbox" class="btn-check" id="electronics" value="7" autocomplete="off">
+        <label class="btn btn-outline-primary" for="electronics">Electronics</label>
+        <input type="checkbox" class="btn-check" id="interior-design" value="8" autocomplete="off">
+        <label class="btn btn-outline-primary" for="interior-design">Interior Design</label>
+      </div>`
+      const line4 = `<div class="form-check form-check-inline">
+        <input type="checkbox" class="btn-check" id="outdoor-living" value="9" autocomplete="off">
+        <label class="btn btn-outline-primary" for="outdoor-living">Outdoor Living</label>
+        <input type="checkbox" class="btn-check" id="food-drink" value="10" autocomplete="off">
+        <label class="btn btn-outline-primary" for="food-drink">Food&Drinks</label>
+      </div>`
+      const line5 = `<div class="form-check form-check-inline">
+        <input type="checkbox" class="btn-check" id="camping" value="11" autocomplete="off">
+        <label class="btn btn-outline-primary" for="camping"><i class="ph"></i>Camping</label>
+        <input type="checkbox" class="btn-check" id="travels" value="12" autocomplete="off">
+        <label class="btn btn-outline-primary" for="travels">Travels</label>
+      </div>`
+      const div = document.createElement('div')
+      div.id = "interests-ctn"
+      div.innerHTML = line1 + line2 + line3 + line4 + line5
+      input_ctn.replaceChildren(div)
+    }
+    steps += 1
+    indicator_ctn.children.item(steps).classList.add('filled')
+  }
+
+  function onlyNumberKey(evt) {
+    var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+    if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+        return false;
+    return true;
+  }
+
+  function postInitProfile(data, csrfToken) {
+    return fetch("http://127.0.0.1:8000/api/initial_profile/", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: new Headers({
+        'content-type': 'application/json',
+        'X-CSRFToken': csrfToken,
+      }),
+    })
+  }
+</script>
+<!--Necessary for draggable and droppable elements-->
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+{%endblock%}

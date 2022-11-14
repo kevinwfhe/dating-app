@@ -1,0 +1,117 @@
+{% extends 'base.html' %} {% block page_title %}{{member.username}}'s Profile{% endblock %} {% load static from static %} {% block content %}
+<!--Profile images-->
+<div class="profile-img-container">
+    <div class="icon-wink-form-container {% if current_user %}disabled-wink-container{% endif %}">
+        <button id="wink-receiver-input" {% if not current_user %}onclick="send_wink_grid_link({{ member.id }})" {% endif %}><i class="far fa-smile-wink"></i></button>
+    </div>
+    <!--Edit profile button-->
+    {% if request.user.id == member.id %}
+    <div class="icon-edit-container">
+        <form action="{% url 'public_profile' %}">
+            <button><i class="far fa-edit"></i></button>
+        </form>
+    </div>
+    {% endif %}
+    <!--Profile images-->
+    <div class="profile-img-draggable">
+        {% for image in member.profileimage_set.all %}
+        <!--Displays profile image or placeholder if image is not verified-->
+        {% if image.is_verified == "APPROVED" or request.user.id == member.id %}
+        <img class="profile-img" src="{{image.image.url}}"> {% else %}
+        <img class="profile-img" src="{% static 'temp/profile-placeholder.png' %}"> {% endif %} {% endfor %}
+    </div>
+</div>
+
+<section class="profile-card-container container">
+    <div class="row">
+        <div class="col-sm-12 profile-username">
+            <h2>{{member.username}}</h2>
+            <h3>{{member.profile.age}}</h3>
+        </div>
+        <div class="col-sm-12 col-md-7">
+            <!--Member bio-->
+            <div class="card-container">
+                <div class="card">
+                    <p>{% if member.profile.is_verified == "APPROVED" %}{{member.profile.bio}}{% else %}Our verification team is currently vetting this member. This user's profile will be visible soon.{%endif%}</p>
+                </div>
+            </div>
+            {% if member.profile.is_verified == "APPROVED" %}
+            <div class="card-container">
+                <div class="card">
+                    <!--Member details-->
+                    <table class="standard-table">
+                        <tr>
+                            <td>Location:</td>
+                            <td class="standard-table-feature">{{member.profile.location}}</td>
+                        </tr>
+                        <tr>
+                            <td>Gender:</td>
+                            <td class="standard-table-feature">{{member.profile.gender|title}}</td>
+                        </tr>
+                        <tr>
+                            <td>Hair Length:</td>
+                            <td class="standard-table-feature">{{member.profile.hair_length|title}}</td>
+                        </tr>
+                        <tr>
+                            <td>Hair Color:</td>
+                            <td class="standard-table-feature">{{member.profile.hair_colour|title}}</td>
+                        </tr>
+                        <tr>
+                            <td>Ethnicity:</td>
+                            <td class="standard-table-feature">{{member.profile.ethnicity|title}}</td>
+                        </tr>
+                        <tr>
+                            <td>Relationship Status:</td>
+                            <td class="standard-table-feature">{{member.profile.relationship_status|title}}</td>
+                        </tr>
+                        <tr>
+                            <td>Education:</td>
+                            <td class="standard-table-feature">{{member.profile.education|title}}</td>
+                        </tr>
+                        <tr>
+                            <td>Height:</td>
+                            <td class="standard-table-feature">{{height}}</td>
+                        </tr>
+                        <tr>
+                            <td>Body Type:</td>
+                            <td class="standard-table-feature">{{member.profile.body_type|title}}</td>
+                        </tr>
+                        <tr>
+                            <td>Children:</td>
+                            <td class="standard-table-feature">{% if member.profile.children %}Yes{%else%}No{%endif%}</td>
+                        </tr>
+                        <tr>
+                            <td>Looking For:</td>
+                            <td class="standard-table-feature">{%if member.profile.looking_for == "BOTH" %}Men & Women{% else %}{{member.profile.looking_for|title}}{% endif %}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            {%endif%}
+        </div>
+        <div class="col-sm-12 col-md-5">
+            <!--Send message form-->
+            <div class="card-container">
+                <div class="{% if current_user %}disabled-card{%endif%} card-form card">
+                    <div class="card-form-container">
+                        <h3>Message {{member.username}}</h3>
+                        <hr>
+                        <form class="standard-form" method="POST">
+                            {% csrf_token %} {% if current_user %}
+                            <label for="id_message_content">Message content:</label>
+                            <textarea disabled="" cols="40" rows="10" id="id_message_content" maxlength="500"></textarea>
+                            <input type="submit" disabled value="SEND" class="disabled-button submit-wide submit-success" name="message_submit" /> {% else %} {{ message_form }}
+                            <input type="submit" value="SEND" class="submit-wide submit-success" name="message_submit" /> {% endif %}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %} {% block js %}
+<!--Necessary for draggable elements-->
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+
+{% endblock %}

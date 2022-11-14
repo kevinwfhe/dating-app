@@ -1,0 +1,25 @@
+{% extends 'base_preregister.html' %} {% block page_title %}Register{% endblock %} {% block content %}
+<!--Register form-->
+<section class="profile-card-container">
+  <div class="card-container card-margin-top">
+    <div class="card-form card account-access-form">
+      <div class="card-form-container">
+        <h3>Sign Up</h3>
+        <form class="standard-form" method="POST">
+          {% csrf_token %} 
+          {{registration_form}}
+          <button class="submit-wide submit-success" type="submit">Sign Up</button>
+        </form>
+
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="footer-spacer">
+  <p class="tou"> Terms of use | Privacy Policy </p>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+{% endblock %}

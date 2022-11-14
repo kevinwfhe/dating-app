@@ -1,0 +1,79 @@
+{% extends 'base.html' %} {% block page_title %}My Account{% endblock %} {% block content %}
+
+<!--Delete account verification modal-->
+<div class="modal fade" id="delete-message-modal" tabindex="-1" role="dialog" aria-labelledby="message-modal-title" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="card-container">
+                <div class="card-form card">
+                    <button type="button" class="close modal-close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <div class="card-form-container">
+                        <h3 class="card-modal-title">Delete Account</h3>
+                        <hr>
+                        <p class="card-form-subtitle">Are you sure?</p>
+                        <p class="card-form-description">Deleting your account is permanant. Your profile, messages, engagement, etc. cannnot be retrieved.</p>
+                        <div class="single-button-modal">
+                            <a href="{% url 'delete' %}" class="btn btn-secondary submit-cancel" />DELETE ACCOUNT</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="profile-card-container container-fluid">
+
+    <div class="row">
+      <div class="col col-sm-12 col-md-4 bg-dark rounded-start py-3">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="{% url 'public_profile' %}">Public profile</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'personal_information' %}">Personal information</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="{% url 'management' %}">Account management</a>
+          </li>
+        </ul>
+      </div>
+
+      
+      <div class="col col-sm-12 col-md-6 bg-dark rounded-end">
+          <div class="card border-0 shadow-none">
+              <div class="card-body bg-dark text-white">
+                <h3 class="card-title">Account management</h3>
+                <p class="card-subtitle">Make changes to your password or delete your account. This information is private and won’t show up in your public profile.</p>
+
+                <form class="create-profile-form standard-form" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %} 
+                    {{ personal_information_form }}
+                </form>
+                <div class="d-flex align-items-center">
+                  <div>
+                    <h6>Delete your data and account</h6>
+                    <label>Delete your account and account data</label>
+                  </div>
+                  <button class="btn btn-dark border h-50 ms-5" onclick="delete_account();">Delete account</button>
+                </div>
+                <div class="d-flex align-items-center">
+                  <a href="/profile/logout/">
+                    <button class="btn btn-dark border h-50 ms-5">Logout</button>
+                  </a>
+                </div>
+              </div>
+          </div>
+      </div>
+</section>
+
+
+{% endblock %} {% block js %}
+<script>
+  function delete_account() {
+    fetch("http://127.0.0.1:8000/api/delete_account/").then(() => {
+      window.location.href = "/";
+    })
+  }
+</script>
+{% endblock %}

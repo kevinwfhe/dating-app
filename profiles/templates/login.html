@@ -1,0 +1,25 @@
+{% extends 'base_preregister.html' %} {% block page_title %}Login{% endblock %} {% block content %}
+
+
+<!--Login form-->
+<section class="profile-card-container">
+    <div class="card-container card-margin-top">
+        <div class="card-form card account-access-form">
+          <div class="card-body bg-dark text-white">
+                <h3>Sign In</h3>
+                <form class="create-profile-form standard-form" method="POST">
+                    {% csrf_token %} {{ login_form }}
+                    <button class="submit-wide submit-success" type="submit">Sign In</button>
+                </form>
+            </div>
+            <p class="forgot-password">Forgot password? Reset it <a href="{% url 'password_reset' %}">here</a></p>
+
+        </div>
+    </div>
+</section>
+
+<div class="footer-spacer">
+  <p class="tou"> Terms of use | Privacy Policy </p>
+</div>
+
+{% endblock %}

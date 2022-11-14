@@ -1,0 +1,74 @@
+{% extends 'base.html' %} {% block page_title %}My Account{% endblock %} {% block content %}
+
+<section class="profile-card-container container-fluid">
+
+    <div class="row">
+      <div class="col col-sm-12 col-md-4 bg-dark rounded-start py-3">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'public_profile' %}">Public profile</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'personal_information' %}">Personal information</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'management' %}">Account management</a>
+          </li>
+        </ul>
+      </div>
+
+      
+      <div class="col-sm-12 col-md-6 bg-dark rounded-end">
+          <div class="card border-0 shadow-none">
+              <div class="card-body bg-dark text-white">
+                <h3 class="card-title">Profile Details</h3>
+                <p class="card-subtitle">Customise your public profile</p>
+
+                <label>Photos</label>
+                <div class="d-flex align-items-center">
+                  <img class="profile-avatar" src="../../home/static/girl1.svg" />
+                  <button type="button" class="btn btn-secondary btn-sm">Change</button>
+                </div>
+
+                <form class="create-profile-form standard-form" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %} 
+                    {{ profile_form }}
+                    <!--Profile photos form-->
+                    {{ formset.management_form }}
+                    <div class="profile-form-container bg-dark">
+                        {% for form in formset %}
+                        <div id="field_{{form.id.id_for_label}}" class="profile-photo-container">
+  
+                            <div {% if not form.initial.image %}style="display: none;" {% endif %} class="profile-delete-icon-container">
+                                <i onclick="delete_profile_photo( event, 'field_{{form.id.id_for_label}}' )" class="far fa-trash-alt"></i>
+                            </div>
+                            {{form}}
+                            <div class="profile-photo-overlay">
+                                <div class="profile-icon-container-absolute">
+                                    <div class="profile-icon-container-flex">
+                                        <i class="fas fa-plus"></i>
+                                    </div>
+                                </div>
+                                {% if form.initial.image %}
+                                <div class="profile-photo-image" style="background-image: url({{form.initial.image.url}})"></div>
+                                {% else %}
+                                <div class="profile-photo-image" style="background-image: none"></div>
+                                {% endif %}
+                            </div>
+  
+                            {% for hidden in form %} {% if not 'image' in hidden.auto_id %}
+                            <input hidden class="delete-hidden-input" type="checkbox" name="delete" value="{{ hidden.value }}"> {% endif %} {% endfor %}
+  
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="standard-form-submit">
+                        <input type="submit" value="Save" class="submit-wide submit-success" name="message_submit">
+                    </div>
+                </form>
+              </div>
+          </div>
+      </div>
+</section>
+
+{% endblock %}
