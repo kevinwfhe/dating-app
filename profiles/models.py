@@ -5,13 +5,6 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 import uuid
 import datetime
 import os
-import math
-from django.db.models.expressions import RawSQL
-from django.http import HttpResponse
-import stripe
-from django.db.backends.signals import connection_created
-from django.dispatch import receiver
-import os
 
 
 class Interest(models.Model):
