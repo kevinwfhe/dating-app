@@ -262,6 +262,7 @@ body {
 .card-img {
     background-repeat: no-repeat;
     background-size: cover;
+    background-position: center;
     height: 80vw;
     width: 100%;
     border-radius: 0;
@@ -1957,7 +1958,7 @@ label {
   justify-content: center;
 }
 .modal.steps #step-input {
-  height: 170px;
+  min-height: 170px;
 }
 .modal.steps #step-input .btn {
   border-radius: 20px;
@@ -2011,4 +2012,9 @@ label {
   height: 36px;
   border-radius: 20px;
   margin-left: 20px;
+}
+
+.profile-image {
+  height: 200px;
+  width: 200px;
 }

@@ -25,7 +25,7 @@
 <section class="profile-card-container container-fluid">
 
     <div class="row">
-      <div class="col col-sm-12 col-md-4 bg-dark rounded-start py-3">
+      <div class="col-sm-12 col-md-4 bg-dark rounded-start py-3">
         <ul class="nav flex-column">
           <li class="nav-item">
             <a class="nav-link" aria-current="page" href="{% url 'public_profile' %}">Public profile</a>
@@ -40,7 +40,7 @@
       </div>
 
       
-      <div class="col col-sm-12 col-md-6 bg-dark rounded-end">
+      <div class="col-sm-12 col-md-6 bg-dark rounded-end">
           <div class="card border-0 shadow-none">
               <div class="card-body bg-dark text-white">
                 <h3 class="card-title">Account management</h3>
@@ -50,17 +50,25 @@
                     {% csrf_token %} 
                     {{ personal_information_form }}
                 </form>
-                <div class="d-flex align-items-center">
-                  <div>
+                <div class="row d-flex align-items-center">
+                  <div class="col-sm-12 col-md-7">
                     <h6>Delete your data and account</h6>
-                    <label>Delete your account and account data</label>
+                    <label class="my-0">Delete your account and account data</label>
                   </div>
-                  <button class="btn btn-dark border h-50 ms-5" onclick="delete_account();">Delete account</button>
+                  <div class="col-sm-12 col-md-5">
+                    <button class="btn btn-dark border h-50 w-100" onclick="delete_account();">Delete account</button>
+                  </div>
                 </div>
-                <div class="d-flex align-items-center">
-                  <a href="/profile/logout/">
-                    <button class="btn btn-dark border h-50 ms-5">Logout</button>
-                  </a>
+                <div class="row d-flex align-items-center mt-5">
+                  <div class="col-sm-12 col-md-7">
+                    <h6>Logout account</h6>
+                    <!-- <label>Delete your account and account data</label> -->
+                  </div>
+                  <div class="col-sm-12 col-md-5">
+                    <a href="/profile/logout/">
+                      <button class="btn btn-dark border h-50 w-100">Log out</button>
+                    </a>
+                  </div>
                 </div>
               </div>
           </div>

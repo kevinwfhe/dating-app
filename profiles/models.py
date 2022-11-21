@@ -3,16 +3,21 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save, pre_delete
 from django.core.validators import MaxValueValidator, MinValueValidator
 import uuid
-import datetime
-import os
 
+
+# Assistance from https://stackoverflow.com/questions/2673647/enforce-unique-upload-file-names-using-django
+def image_filename(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (uuid.uuid4(), ext)
+    return filename
 
 class Interest(models.Model):
     name = models.TextField(default="", blank=False, max_length=100)
 class Profile(models.Model):
     GENDER = (
         ("MALE", "Male"),
-        ("FEMALE", "Female")
+        ("FEMALE", "Female"),
+        ("OTHER", "Other"),
     )
     LOOKING_FOR = (
         ('MALE', 'Male'),
@@ -36,8 +41,10 @@ class Profile(models.Model):
     relationship_status = models.CharField(choices=RELATIONSHIP_STATUS, default="SINGLE", blank=False, max_length=100)
     location = models.CharField(max_length=100, default='', blank=False)
     looking_for = models.CharField(choices=LOOKING_FOR, default='BOTH', blank=False, max_length=6)
-    bio = models.TextField(max_length=500, default='', blank=True)
+    about = models.TextField(max_length=500, default='', blank=True)
     interests = models.ManyToManyField(Interest)
+    avatar = models.ImageField(upload_to=image_filename, blank=True)
+    image = models.ImageField(upload_to=image_filename, blank=True)
 
     # Additional info that might be used in the futuer
     # hair_length = models.CharField(choices=HAIR_LENGTH, default="LONG", blank=False, max_length=100)
@@ -55,11 +62,7 @@ class Profile(models.Model):
     
     # objects = LocationManager()
 
-# Assistance from https://stackoverflow.com/questions/2673647/enforce-unique-upload-file-names-using-django
-def image_filename(instance, filename):
-    ext = filename.split('.')[-1]
-    filename = "%s.%s" % (uuid.uuid4(), ext)
-    return os.path.join('images/', filename)
+
     
 class ProfileImage(models.Model):
     

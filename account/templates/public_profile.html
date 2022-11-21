@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% block page_title %}My Account{% endblock %} {% block content %}
+{% extends 'base.html' %} {% load static from static %} {% block page_title %}My Account{% endblock %} {% block content %}
 
 <section class="profile-card-container container-fluid">
 
@@ -26,49 +26,84 @@
 
                 <label>Photos</label>
                 <div class="d-flex align-items-center">
-                  <img class="profile-avatar" src="../../home/static/girl1.svg" />
-                  <button type="button" class="btn btn-secondary btn-sm">Change</button>
+                  {% if avatar %}
+                  <img class="profile-avatar" src="{{ MEDIA_URL }}{{ avatar }}" />
+                  {% else %}
+                  <img class="profile-avatar" src="{% static 'temp/profile-placeholder.png' %}" />
+                  {% endif %}
+                  <button type="button" onclick="selectAvatar()" class="btn btn-secondary btn-sm">Change</button>
+                  <input type="file" onchange="uploadAvatar(event)" id="upload-avatar" class="d-none" accept=".png,.jpg,.jpeg" />
                 </div>
 
                 <form class="create-profile-form standard-form" method="POST" enctype="multipart/form-data">
-                    {% csrf_token %} 
+                    {% csrf_token %}
                     {{ profile_form }}
                     <!--Profile photos form-->
-                    {{ formset.management_form }}
-                    <div class="profile-form-container bg-dark">
-                        {% for form in formset %}
-                        <div id="field_{{form.id.id_for_label}}" class="profile-photo-container">
-  
-                            <div {% if not form.initial.image %}style="display: none;" {% endif %} class="profile-delete-icon-container">
-                                <i onclick="delete_profile_photo( event, 'field_{{form.id.id_for_label}}' )" class="far fa-trash-alt"></i>
-                            </div>
-                            {{form}}
-                            <div class="profile-photo-overlay">
-                                <div class="profile-icon-container-absolute">
-                                    <div class="profile-icon-container-flex">
-                                        <i class="fas fa-plus"></i>
-                                    </div>
-                                </div>
-                                {% if form.initial.image %}
-                                <div class="profile-photo-image" style="background-image: url({{form.initial.image.url}})"></div>
-                                {% else %}
-                                <div class="profile-photo-image" style="background-image: none"></div>
-                                {% endif %}
-                            </div>
-  
-                            {% for hidden in form %} {% if not 'image' in hidden.auto_id %}
-                            <input hidden class="delete-hidden-input" type="checkbox" name="delete" value="{{ hidden.value }}"> {% endif %} {% endfor %}
-  
-                        </div>
-                        {% endfor %}
+                    <div>
+                      <label>Profile image</label>
+                      <div>
+                        {% if profile_image %}
+                        <img class="profile-image" onclick="selectProfileImage()" src="{{MEDIA_URL}}{{profile_image}}" />
+                        {% else %}
+                        <img class="profile-image" onclick="selectProfileImage()" src="{% static 'temp/profile-placeholder.png' %}" />
+                        {% endif %}
+                        <input type="file" onchange="uploadProfileImage(event)" id="upload-profile-image" class="d-none" accept=".png,.jpg,.jpeg" />
+                      </div>
                     </div>
                     <div class="standard-form-submit">
-                        <input type="submit" value="Save" class="submit-wide submit-success" name="message_submit">
+                      <input type="submit" value="Save" class="submit-wide submit-success" name="message_submit">
                     </div>
-                </form>
+                  </form>
               </div>
           </div>
       </div>
 </section>
 
+{% endblock %} {% block js %}
+<script>
+  function selectProfileImage() {
+    const ie = document.querySelector('#upload-profile-image')
+    ie.click()
+  }
+  function uploadProfileImage(e) {
+    const imageEl = document.querySelector('.profile-image')
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value
+    const image = e.target.files[0]
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      imageEl.src = e.target.result
+      fetch("http://127.0.0.1:8000/api/upload_image/", {
+        method: "POST",
+        body: JSON.stringify({image: e.target.result}),
+        headers: new Headers({
+          'content-type': 'application/json',
+          'X-CSRFToken': csrfToken,
+        }),
+      })
+    };
+    reader.readAsDataURL(image);
+  }
+  function selectAvatar() {
+    const ie = document.querySelector('#upload-avatar')
+    ie.click()
+  }
+  function uploadAvatar(e) {
+    const avatarEl = document.querySelector('.profile-avatar')
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value
+    const image = e.target.files[0]
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      avatarEl.src = e.target.result
+      fetch("http://127.0.0.1:8000/api/upload_avatar/", {
+        method: "POST",
+        body: JSON.stringify({avatar: e.target.result}),
+        headers: new Headers({
+          'content-type': 'application/json',
+          'X-CSRFToken': csrfToken,
+        }),
+      })
+    };
+    reader.readAsDataURL(image);
+  }
+</script>
 {% endblock %}

@@ -32,7 +32,7 @@
             <!--Member bio-->
             <div class="card-container">
                 <div class="card">
-                    <p>{% if member.profile.is_verified == "APPROVED" %}{{member.profile.bio}}{% else %}Our verification team is currently vetting this member. This user's profile will be visible soon.{%endif%}</p>
+                    <p>{% if member.profile.is_verified == "APPROVED" %}{{member.profile.about}}{% else %}Our verification team is currently vetting this member. This user's profile will be visible soon.{%endif%}</p>
                 </div>
             </div>
             {% if member.profile.is_verified == "APPROVED" %}
@@ -82,7 +82,7 @@
                         </tr>
                         <tr>
                             <td>Looking For:</td>
-                            <td class="standard-table-feature">{%if member.profile.looking_for == "BOTH" %}Men & Women{% else %}{{member.profile.looking_for|title}}{% endif %}</td>
+                            <td class="standard-table-feature">{% if member.profile.looking_for == "BOTH" %}Men & Women{% else %}{{member.profile.looking_for|title}}{% endif %}</td>
                         </tr>
                     </table>
                 </div>

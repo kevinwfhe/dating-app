@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'home',
     'account',
     'profiles',
+    'match',
     'api',
 ]
 
@@ -156,3 +157,7 @@ AWS_S3_REGION_NAME = 'us-east-1'
 AWS_ACCESS_KEY_ID = os.environ.get("aws_access_key")
 AWS_SECRET_ACCESS_KEY = os.environ.get("aws_secret_key")
 MEDIAFILES_LOCATION = 'profile-image'
+
+
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+MEDIA_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)

@@ -10,7 +10,7 @@ import stripe
 import datetime
 import time
 from django.contrib.auth.forms import PasswordChangeForm
-from profiles.forms import EditProfileForm, ProfileForm, ProfileImageForm, PersonalInformationForm
+from profiles.forms import EditProfileForm, ProfileForm, PersonalInformationForm
 from rest_framework.views import APIView
 from rest_framework import authentication, permissions
 import os
@@ -18,51 +18,32 @@ import os
 # Account page for users to see and change Stripe and profile account details
 @login_required
 def public_profile(request):
-    ImageFormSet = modelformset_factory(ProfileImage, form=ProfileImageForm, extra=1, max_num=1, help_texts=None)
     
     # If user has submitted profile form
     if request.method == "POST":
         profile_form = ProfileForm(request.POST, instance=request.user.profile)
-        image_form = ProfileImageForm(request.POST, request.FILES)
-        
-        formset = ImageFormSet(request.POST, request.FILES,
-                              queryset=ProfileImage.objects.filter(user_id=request.user.id).all())
+
         print(os.environ.get("aws_secret_key"))
         # Update profile and change profile to 'to be approved'
-        if profile_form.is_valid() and formset.is_valid():
+        if profile_form.is_valid():
             instance = profile_form.save(commit=False)
             instance.user_id = request.user.id
             # instance.is_verified = 'TO BE APPROVED'
             instance.save()
-            
-            # Get images requested to be deleted and delete them
-            deleted_images = request.POST.getlist('delete')
-            for image in deleted_images:
-                if not image == "None":
-                    ProfileImage.objects.get(pk=image).delete()
-                    
-            # Save submitted images
-            for form in formset:
-                if form.is_valid() and form.has_changed():
-                    instance_image = form.save(commit=False)
-                    instance_image.user = request.user
-                    instance_image.is_verified = True
-                    instance_image.save()
 
             return redirect(reverse('public_profile'))
             
     else:
+        profile = Profile.objects.get(user=request.user)
+        avatar = profile.avatar
         profile_form = ProfileForm(instance=request.user.profile)
-        image_form = ProfileImageForm(instance=request.user.profile)
-        initial_images = [{'image_url': i.image} for i in ProfileImage.objects.filter(user_id=request.user.id).all() if i.image]
-        formset = ImageFormSet(queryset=ProfileImage.objects.filter(user_id=request.user.id).all(), initial=initial_images)
-      
-        
+        profile_image = profile.image
+
     context = {
-        'page_ref':'public_profile',
-        'profile_form':profile_form,
-        'image_form':image_form,
-        'formset': formset
+        'page_ref' : 'public_profile',
+        'profile_form' : profile_form,
+        'avatar' : avatar,
+        'profile_image' : profile_image,
     }
     
     return render(request, 'public_profile.html', context)
@@ -70,10 +51,14 @@ def public_profile(request):
 @login_required
 def personal_information(request):
     # If user has submitted change account details form
-    if request.method == "POST" and 'account-change-submit' in request.POST:
-      personal_info_form = PersonalInformationForm(request.POST)
+    if request.method == "POST":
+        personal_info_form = PersonalInformationForm(request.POST)
+        profile = Profile.objects.get(user=request.user)
+        profile.gender = personal_info_form.data['gender']
+        print(profile.gender)
+        profile.save()
     else:
-      personal_info_form = PersonalInformationForm()
+      personal_info_form = PersonalInformationForm(initial={'gender': request.user.profile.gender})
     context = {
         'personal_information_form': personal_info_form
     }

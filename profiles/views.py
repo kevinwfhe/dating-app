@@ -1,16 +1,16 @@
 from django.shortcuts import render, redirect, reverse
 from django.contrib import auth
 from django.forms import modelformset_factory
-from profiles.forms import UserLoginForm, UserRegistrationForm, ProfileForm, ProfileImageForm
+from profiles.forms import UserLoginForm, UserRegistrationForm, ProfileForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse, JsonResponse
 from .models import Profile, ProfileImage
-import stripe
 from rest_framework.views import APIView
 from rest_framework import authentication, permissions
-from django.views.decorators.csrf import csrf_exempt
+import base64
+from django.core.files.base import ContentFile
     
 """
 Function to check if member profiles matches with current user's sexuality (and 
@@ -213,16 +213,11 @@ def verification_message(request):
     
     return render(request, 'verification-message.html')
 
-# @csrf_exempt
 class InitialProfile(APIView):
     authentication_classes = [authentication.SessionAuthentication]
     permission_classes = [permissions.IsAuthenticated]
-    # permission_classes = [permissions.AllowAny]
-
 
     def post(self, request, format=None):
-        print(request.user.id)
-        print(request.data)
         profile = Profile.objects.get(user=request.user)
         profile.age = request.data["age"]
         profile.location = request.data["loc"]
@@ -234,3 +229,31 @@ class InitialProfile(APIView):
         profile.has_filled_profile = True
         profile.save()
         return HttpResponse(status=204)
+
+class UploadAvatar(APIView):
+    authentication_classes = [authentication.SessionAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        profile = Profile.objects.get(user=request.user)
+        avatar_str = request.data['avatar']
+        format, imgstr = avatar_str.split(';base64,') 
+        ext = format.split('/')[-1] 
+        avatar = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
+        profile.avatar = avatar
+        profile.save()
+        return HttpResponse(status=204)
+
+class UploadImage(APIView):
+  authentication_classes = [authentication.SessionAuthentication]
+  permission_classes = [permissions.IsAuthenticated]
+
+  def post(self, request):
+      profile = Profile.objects.get(user=request.user)
+      image_str = request.data['image']
+      format, imgstr = image_str.split(';base64,') 
+      ext = format.split('/')[-1] 
+      image = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
+      profile.image = image
+      profile.save()
+      return HttpResponse(status=204)

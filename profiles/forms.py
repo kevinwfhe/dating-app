@@ -100,14 +100,6 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ( 'about', 'relationship_status', 'looking_for',  'location') 
-    
-class ProfileImageForm(forms.ModelForm):
-    
-    image = forms.ImageField(label='', required=False, error_messages = {'invalid':"Image files only"}, widget=forms.FileInput(attrs = {'class': "profile-photo-input"}))
-
-    class Meta:
-        model = ProfileImage
-        fields = ('image', )
 
 
 class PersonalInformationForm(forms.Form):

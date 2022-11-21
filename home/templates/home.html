@@ -76,8 +76,8 @@
 
     {% for profile in card_profiles %}
     <div id="draggable-{{profile.user.id}}" class="card draggable-card draggable ui-widget-content">
-        {% if profile.user.profileimage_set.first.is_verified == "APPROVED" %}
-        <div class="card-img" style="background-image: url( {{ MEDIA_URL }}{{profile.user.profileimage_set.first.image}})"></div>
+        {% if profile.image %}
+        <div class="card-img" style="background-image: url( {{ MEDIA_URL }}{{profile.image}})"></div>
         {% else %}
         <div class="card-img" style="background-image: url({% static 'temp/profile-placeholder.png' %})"></div>
         {% endif %}
