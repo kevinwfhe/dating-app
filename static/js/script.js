@@ -87,7 +87,7 @@ $(".not-profile-page-message-form").on("submit", function (event) {
 // Send wink - when passing receiver_id
 function send_wink_grid_link(receiver_id) {
   $.ajax({
-    url: "/chat/ajax/winks/",
+    url: "/api/wink_back/",
     datatype: "json",
     data: {
       receiver_id: receiver_id,

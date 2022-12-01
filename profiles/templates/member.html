@@ -30,12 +30,12 @@
         </div>
         <div class="col-sm-12 col-md-7">
             <!--Member bio-->
-            <div class="card-container">
+            <!-- <div class="card-container">
                 <div class="card">
                     <p>{% if member.profile.is_verified == "APPROVED" %}{{member.profile.about}}{% else %}Our verification team is currently vetting this member. This user's profile will be visible soon.{%endif%}</p>
                 </div>
-            </div>
-            {% if member.profile.is_verified == "APPROVED" %}
+            </div> -->
+            {% if member.profile %}
             <div class="card-container">
                 <div class="card">
                     <!--Member details-->
@@ -88,24 +88,6 @@
                 </div>
             </div>
             {%endif%}
-        </div>
-        <div class="col-sm-12 col-md-5">
-            <!--Send message form-->
-            <div class="card-container">
-                <div class="{% if current_user %}disabled-card{%endif%} card-form card">
-                    <div class="card-form-container">
-                        <h3>Message {{member.username}}</h3>
-                        <hr>
-                        <form class="standard-form" method="POST">
-                            {% csrf_token %} {% if current_user %}
-                            <label for="id_message_content">Message content:</label>
-                            <textarea disabled="" cols="40" rows="10" id="id_message_content" maxlength="500"></textarea>
-                            <input type="submit" disabled value="SEND" class="disabled-button submit-wide submit-success" name="message_submit" /> {% else %} {{ message_form }}
-                            <input type="submit" value="SEND" class="submit-wide submit-success" name="message_submit" /> {% endif %}
-                        </form>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </section>

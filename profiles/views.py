@@ -132,7 +132,6 @@ def member_profile(request, id):
     
     # Check is member if current user
     member = User.objects.get(id=id)
-    height = height_choices(str(member.profile.height))
     if not member == request.user:
         current_user = False
         
@@ -145,10 +144,10 @@ def member_profile(request, id):
             return result
         
         # Add view if last view is not read or user hasn't viewed member before
-        last_view = Views.objects.filter(receiver_id=id).filter(sender_id=request.user.id).last()
-        if not last_view or last_view.is_read:
-            view = Views(receiver=member, sender=request.user)
-            view.save()
+        # last_view = Views.objects.filter(receiver_id=id).filter(sender_id=request.user.id).last()
+        # if not last_view or last_view.is_read:
+        #     view = Views(receiver=member, sender=request.user)
+        #     view.save()
         
         # If user has submitted messages form
         # if request.method == "POST" and 'message_submit' in request.POST:
@@ -200,11 +199,9 @@ def member_profile(request, id):
         current_user = True
         
     context = {
-        'height': height,
-        'page_ref': 'member_profile',
-        'member':member,
-        # 'message_form': message_form,
-        'current_user': current_user
+        'page_ref' : 'member_profile',
+        'member' : member,
+        'current_user' : current_user
     }
     return render(request, 'member.html', context)
     

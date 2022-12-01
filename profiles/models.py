@@ -4,6 +4,8 @@ from django.db.models.signals import post_save, pre_delete
 from django.core.validators import MaxValueValidator, MinValueValidator
 import uuid
 
+from match.models import Match
+
 
 # Assistance from https://stackoverflow.com/questions/2673647/enforce-unique-upload-file-names-using-django
 def image_filename(instance, filename):
@@ -45,6 +47,7 @@ class Profile(models.Model):
     interests = models.ManyToManyField(Interest)
     avatar = models.ImageField(upload_to=image_filename, blank=True)
     image = models.ImageField(upload_to=image_filename, blank=True)
+    has_dated = models.BooleanField(default=False, blank=False)
 
     # Additional info that might be used in the futuer
     # hair_length = models.CharField(choices=HAIR_LENGTH, default="LONG", blank=False, max_length=100)

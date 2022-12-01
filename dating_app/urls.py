@@ -19,6 +19,7 @@ from django.urls import path, include, re_path
 from profiles import urls as profile_urls
 from home import urls as home_urls
 from account import urls as account_urls
+from match import urls as match_urls
 from api import urls as api_endpoint
 from django.views.static import serve
 
@@ -27,5 +28,6 @@ urlpatterns = [
     path('', include(home_urls)),
     path('account/', include(account_urls)),
     path('profile/', include(profile_urls)),
+    path('match/', include(match_urls)),
     path('api/', include(api_endpoint))
 ]

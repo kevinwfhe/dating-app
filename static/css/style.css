@@ -2006,6 +2006,7 @@ label {
   height: 64px;
   width: 64px;
   border-radius: 50%;
+  object-fit: cover;
 }
 
 .profile-avatar + button {
@@ -2017,4 +2018,17 @@ label {
 .profile-image {
   height: 200px;
   width: 200px;
+}
+
+.secondary-text {
+  font-size: 0.75rem;
+  color: #D9D9D9;
+}
+
+.pink-btn {
+  border-radius: 10px;
+  background-color: #E94057;
+  color: white;
+  border: none;
+  padding: 8px 20px;
 }
