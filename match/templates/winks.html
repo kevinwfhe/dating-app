@@ -1,0 +1,124 @@
+{% extends 'base.html' %} {% load static from static %} {% block page_title %}Winks{% endblock %} {% block content %}
+
+<section class="profile-card-container container-fluid">
+
+  <div class="row">
+    <div class="col-sm-12 col-md-4 bg-dark rounded-start py-3">
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link active" href="{% url 'winks' %}">Winks</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="{% url 'match' %}">Match</a>
+        </li>
+        <!-- <li class="nav-item">
+          <a class="nav-link active" href="{% url 'management' %}">Account management</a>
+        </li> -->
+      </ul>
+    </div>
+
+    
+    <div class="col-sm-12 col-md-6 bg-dark rounded-end">
+        <div class="card border-0 shadow-none">
+            <div class="card-body bg-dark text-white">
+              <h3 class="card-title">Winks</h3>
+              <!-- <p class="card-subtitle">Make changes to your password or delete your account. This information is private and won’t show up in your public profile.</p> -->
+            </div>
+        </div>
+        <div class="container-fluid">
+          <div class="row">
+              {% if winks_page %} {% for wink in winks_page %}
+              <div class="card-container col-sm-12">
+                  <div class="card wide-card p-3 mb-3">
+                      <div class="row title">
+                        <div class="col-8 info p-0">
+                          <div class="row">
+                            <div class="col-4 avatar p-0">
+                              {% if wink.sender.profile.avatar %}
+                              <img class="profile-avatar" src="{{ MEDIA_URL }}{{wink.sender.profile.avatar}}" />
+                              {% else %}
+                              <div class="profile-avatar" style="background-image: url({% static 'temp/profile-placeholder.png' %})"></div>
+                              {% endif %}
+                            </div>
+                            <div class="col-8 profile p-0">
+                              <div class="first">
+                                <span class="name p-0 pe-1">{{ wink.sender.username }}</span>
+                                <span class="age p-0 secondary-text ">{{ wink.sender.profile.age }}</span>
+                                </div>
+                                <div class="row second">
+                                  <div class="col loc p-0 secondary-text">{{ wink.sender.profile.location }}</div>
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-4 time p-0 secondary-text text-end">{{wink.created_on}}</div>
+                        </div>
+                        <div class="row ops pt-3">
+                          <a href="{% url 'member_profile' wink.sender.id %}" class="col p-0 mx-2">
+                            <button class="pink-btn  w-100" >Details</button>
+                          </a>
+                          <a class="col p-0 mx-2">
+                            <button onclick="send_wink_grid_link({{wink.sender.id}})" class="pink-btn  w-100">Wink back</button>
+                          </a>
+                        </div>
+                      </div>
+                      <!-- <div class="row">
+                          <div class="wide-user-details col-xs-12 col-sm-6">
+                              {% if wink.sender.profile.avatar %}
+                              <div class=" card-img" style="background-image: url({{ MEDIA_URL }}{{wink.sender.profile.avatar}})"></div>
+                              {% else %}
+                              <div class=" card-img" style="background-image: url({% static 'temp/profile-placeholder.png' %})"></div>
+                              {% endif %}
+                              <div>
+                                  <div class="username-container">
+                                      <p class="card-username">{{wink.sender.username}}</p>
+                                      <p class="card-distance">4 Miles Away</p>
+                                      <p class="card-age">{{wink.sender.age}}69</p>
+                                  </div>
+                                  <div class="wide-date-container">
+                                      <p>{{wink.created_on}}</p>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="col-xs-12 col-sm-6 wide-button-container">
+                              <a href="{% url 'member_profile' wink.sender.id %}" class="btn standard-button">VISIT USER</a>
+                              <button onclick="send_wink_grid_link({{wink.sender.id}})" class="btn standard-button">WINK BACK</button>
+                          </div>
+                      </div> -->
+                      <!--Change from a link-->
+                  </div>
+              </div>
+              {% endfor %} {% else %}
+              <div class="card-container col-lg-12 message-box">
+                  <div class="card">
+                      <div class="message-box-content message-box-empty" style="overflow: auto;">
+                          <div>
+                              <h3>No Winks :(</h3>
+                              <a href="{% url 'index' %}" class="btn standard-button">START THE CONVERSATION YOURSELF</a>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              {% endif %}
+          </div>
+      </div>
+    </div>
+</section>
+<!--All profiles that have winked at member-->
+
+
+<div>
+
+</div>
+<!--Pagination-->
+<div class="pagination-links">
+    {% if winks_page %} {% for wink in winks_page %} {% endfor %} {% if winks_page.has_previous %}
+    <a href="?page={{ winks_page.previous_page_number }}">Previous</a> {% endif %}
+
+    <span data-page={{page}} class="current">
+    Page {{ winks_page.number }} of {{ winks_page.paginator.num_pages }}
+    </span> {% if winks_page.has_next %}
+    <a href="?page={{ winks_page.next_page_number }}">Next ></a> {% endif %} {% endif %}
+</div>
+
+{% endblock %} 

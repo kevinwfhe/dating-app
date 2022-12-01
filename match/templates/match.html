@@ -1,0 +1,216 @@
+{% extends 'base.html' %} {% load static from static %} {% block page_title %}Winks{% endblock %} {% block content %}
+
+<div class="modal fade" id="startDateModal" tabindex="-1" aria-labelledby="startDateModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="startDateModalLabel">Start a Date</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-5">
+        <div class="row">
+          <div class="col-3 avatar p-0">
+            <img class="profile-avatar" />
+          </div>
+          <div class="col-8 profile p-0">
+            <div class="first">
+              <span class="name p-0 pe-1"></span>
+              <span class="age p-0 secondary-text "></span>
+              </div>
+              <div class="row second">
+                <div class="col loc secondary-text"></div>
+              </div>
+          </div>
+        </div>
+        <div class="row">
+          <label class="my-0">Time</label>
+          <input type="text" class="form-control" placeholder="Time" aria-label="time">
+          <label class="my-0">Location</label>
+          <input type="text" class="form-control" placeholder="Location" aria-label="location">
+        </div>
+        <div class="first-date"></div>
+        <div class="coupon-type d-none">
+          <div class="d-flex">
+            <div id="reservation-coupon">Free Reservation</div>
+            <div id="flight-coupon">Flight Coupon</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" onclick="startDate(event)" class="btn btn-primary">Send invitation</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--All profiles that have winked at member-->
+<section class="profile-card-container container-fluid">
+
+  <div class="row">
+    <div class="col-sm-12 col-md-4 bg-dark rounded-start py-3">
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'winks' %}">Winks</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'match' %}">Match</a>
+        </li>
+        <!-- <li class="nav-item">
+          <a class="nav-link active" href="{% url 'management' %}">Account management</a>
+        </li> -->
+      </ul>
+    </div>
+
+    
+    <div class="col-sm-12 col-md-6 bg-dark rounded-end">
+        <div class="card border-0 shadow-none">
+            <div class="card-body bg-dark text-white">
+              <h3 class="card-title">Match</h3>
+              <!-- <p class="card-subtitle">Make changes to your password or delete your account. This information is private and won’t show up in your public profile.</p> -->
+            </div>
+        </div>
+        <div class="container-fluid">
+          <div class="row">
+              {% csrf_token %}
+              <input type="hidden" name="csrfmiddlewaretoken" value="{% csrf_token %}">
+              {% if matches_page %} {% for match in matches_page %}
+              <div class="card-container col-sm-12">
+                  <div class="card wide-card p-3 mb-3">
+                      <div class="row title">
+                        <div class="col-8 info p-0">
+                          <div class="row">
+                            <div class="col-4 avatar p-0">
+                              {% if match.profile.avatar %}
+                              <img class="profile-avatar" src="{{ MEDIA_URL }}{{match.target.profile.avatar}}" />
+                              {% else %}
+                              <div class="profile-avatar" style="background-image: url({% static 'temp/profile-placeholder.png' %})"></div>
+                              {% endif %}
+                            </div>
+                            <div class="col-8 profile p-0">
+                              <div class="first">
+                                <span class="name p-0 pe-1">{{ match.target.username }}</span>
+                                <span class="age p-0 secondary-text ">{{ match.target.profile.age }}</span>
+                                </div>
+                                <div class="row second">
+                                  <div class="col loc p-0 secondary-text">{{ match.target.profile.location }}</div>
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-4 time p-0 secondary-text text-end">{{match.created_on}}</div>
+                        </div>
+                        <div class="row ops pt-3">
+                          {% if match.date %}
+                          <div>Date Details</div>
+                          {% else %}
+                          <button 
+                            class="col p-0 mx-2 pink-btn w-100" 
+                            onclick="startDate(event, 
+                              '{{match.target.id}}', 
+                              '{{match.target.username}}', 
+                              '{{match.target.profile.age}}', 
+                              '{{match.target.profile.location}}', 
+                              '{{match.target.profile.avatar}}', 
+                              '{{match.created_on}}',
+                              '{{match.target.profile.has_dated}}',
+                              '{{current_user.profile.has_dated}}')
+                              " 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#startDateModal">
+                            Start a date
+                          </button>
+                          {% endif %}
+                          <!-- <a class="col p-0 mx-2">
+                            <button onclick="send_wink_grid_link({{wink.sender.id}})" class="pink-btn  w-100">Wink back</button>
+                          </a> -->
+                        </div>
+                      </div>
+                  </div>
+              </div>
+              {% endfor %} {% else %}
+              <div class="card-container col-lg-12 message-box">
+                  <div class="card">
+                      <div class="message-box-content message-box-empty" style="overflow: auto;">
+                          <div>
+                              <h3>No Matches :(</h3>
+                              <a href="{% url 'index' %}" class="btn standard-button">START THE CONVERSATION YOURSELF</a>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              {% endif %}
+          </div>
+    </div>
+</section>
+
+<!--Pagination-->
+<!-- <div class="pagination-links">
+    {% if winks_page %} {% for wink in winks_page %} {% endfor %} {% if winks_page.has_previous %}
+    <a href="?page={{ winks_page.previous_page_number }}">Previous</a> {% endif %}
+
+    <span data-page={{page}} class="current">
+    Page {{ winks_page.number }} of {{ winks_page.paginator.num_pages }}
+    </span> {% if winks_page.has_next %}
+    <a href="?page={{ winks_page.next_page_number }}">Next ></a> {% endif %} {% endif %}
+</div> -->
+
+{% endblock %} {% block js %}
+<script>
+  let dateTarget = {}
+  $('#startDateModal').on('shown.bs.modal', function(event) {
+    console.log('open modal', dateTarget)  
+
+    const modal = document.getElementById('startDateModal')
+    const avatar = modal.getElementsByClassName('profile-avatar')
+    if(dateTarget.avatar) {
+      avatar[0].src = "{{ MEDIA_URL }}{{match.target.profile.avatar}}"
+    } else {
+      avatar[0].src = "{% static 'temp/profile-placeholder.png' %}"
+    }
+    const name = modal.getElementsByClassName('name')
+    name[0].innerText = dateTarget.username
+    const age = modal.getElementsByClassName('age')
+    age[0].innerText = dateTarget.age
+    const loc = modal.getElementsByClassName('loc')
+    loc[0].innerText = dateTarget.location
+
+    if(dateTarget.target_dated === 'False' && dateTarget.current_user_dated === 'False') {
+      console.log('first date')
+      const firstDate = modal.getElementsByClassName('first-date')
+      firstDate[0].innerText = 'This is the first date for both of you, so it is sponsored by us.'
+
+
+    }
+  })
+  function startDate(evt, id, username, age, location, avatar, created_on, target_dated, current_user_dated) {
+    dateTarget = {
+      id,
+      username,
+      age,
+      location,
+      avatar,
+      created_on,
+      target_dated,
+      current_user_dated
+    }
+    return
+  }
+  function sendDate() {
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value
+    console.log(csrfToken)
+    data = {
+      targetId: dateTarget.id,
+      datetime: Date.now(),
+      location: "random location",
+      couponType: "RESERVATION"
+    }
+    return fetch("http://127.0.0.1:8000/api/start_date/", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: new Headers({
+        'content-type': 'application/json',
+        'X-CSRFToken': csrfToken,
+      }),
+    })
+  }
+</script>
+{% endblock %}
