@@ -158,7 +158,7 @@ class StartDate(APIView):
       datetime = dt.fromtimestamp(request.data['datetime']/1000.0) 
       location = request.data['location']
       coupon_type = request.data['couponType']
-      
+      print(initiator, target, datetime, location, coupon_type)
       if target and initiator and datetime and location:
           date = Date(initiator=initiator, target=target, datetime=datetime, location=location, coupon_type=coupon_type)
 

@@ -7,37 +7,41 @@
         <h1 class="modal-title fs-5" id="startDateModalLabel">Start a Date</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body p-5">
-        <div class="row">
-          <div class="col-3 avatar p-0">
-            <img class="profile-avatar" />
+      <div class="modal-body p-4">
+        <div class="container p-0">
+          <div class="row px-3">
+            <div class="col-3 avatar p-0">
+              <img class="profile-avatar" />
+            </div>
+            <div class="col-8 profile p-0">
+              <div class="first">
+                <span class="name p-0 pe-1"></span>
+                <span class="age p-0 secondary-text "></span>
+                </div>
+                <div class="row second">
+                  <div class="col loc secondary-text"></div>
+                </div>
+            </div>
           </div>
-          <div class="col-8 profile p-0">
-            <div class="first">
-              <span class="name p-0 pe-1"></span>
-              <span class="age p-0 secondary-text "></span>
+          <div class="row p-3">
+            <label class="my-0">Time</label>
+            <!-- <input type="text" class="form-control mb-2" id="date-time" placeholder="Time" aria-label="time"> -->
+            <input id="date-time" type="text" class="form-control mb-2" placeholder="Time" aria-label="time" />
+            <label class="my-0">Location</label>
+            <input type="text" class="form-control" id="date-location" placeholder="Location" aria-label="location">
+          </div>
+          <div class="coupon-wrapper">
+            <div class="first-date d-none">This is the first date for both of you, so it is sponsored by us.</div>
+            <div class="coupon-type-ctn d-none">
+              <div class="d-flex">
+                <div class="coupon-type" id="reservation-coupon">Free Reservation</div>
+                <div class="coupon-type" id="flight-coupon">Flight Coupon</div>
               </div>
-              <div class="row second">
-                <div class="col loc secondary-text"></div>
-              </div>
+            </div>
+            <div class="coupon-description"></div>
           </div>
         </div>
-        <div class="row">
-          <label class="my-0">Time</label>
-          <input type="text" class="form-control" placeholder="Time" aria-label="time">
-          <label class="my-0">Location</label>
-          <input type="text" class="form-control" placeholder="Location" aria-label="location">
-        </div>
-        <div class="first-date"></div>
-        <div class="coupon-type d-none">
-          <div class="d-flex">
-            <div id="reservation-coupon">Free Reservation</div>
-            <div id="flight-coupon">Flight Coupon</div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" onclick="startDate(event)" class="btn btn-primary">Send invitation</button>
+        <button type="button" onclick="sendDate()" class="w-100 pink-btn">Send invitation</button>
       </div>
     </div>
   </div>
@@ -112,7 +116,8 @@
                               '{{match.target.profile.avatar}}', 
                               '{{match.created_on}}',
                               '{{match.target.profile.has_dated}}',
-                              '{{current_user.profile.has_dated}}')
+                              '{{current_user.profile.has_dated}}',
+                              '{{current_user.profile.location}}')
                               " 
                             data-bs-toggle="modal" 
                             data-bs-target="#startDateModal">
@@ -156,8 +161,17 @@
 {% endblock %} {% block js %}
 <script>
   let dateTarget = {}
+  let couponType = null
+  let dateTime = null
+  if(tempusDominus) {
+    const dateTimeEl = document.getElementById('date-time')
+    new tempusDominus.TempusDominus(dateTimeEl, {});
+    dateTimeEl.addEventListener('change', (e) => {
+      dateTime = e.detail.date
+    })
+
+  }
   $('#startDateModal').on('shown.bs.modal', function(event) {
-    console.log('open modal', dateTarget)  
 
     const modal = document.getElementById('startDateModal')
     const avatar = modal.getElementsByClassName('profile-avatar')
@@ -173,15 +187,44 @@
     const loc = modal.getElementsByClassName('loc')
     loc[0].innerText = dateTarget.location
 
-    if(dateTarget.target_dated === 'False' && dateTarget.current_user_dated === 'False') {
+    if(dateTarget.coupon_available) {
       console.log('first date')
-      const firstDate = modal.getElementsByClassName('first-date')
-      firstDate[0].innerText = 'This is the first date for both of you, so it is sponsored by us.'
+      const firstDate = modal.getElementsByClassName('first-date')[0]
+      const couponTypeCtn = modal.getElementsByClassName('coupon-type-ctn')[0]
+      const reservationCoupon = document.getElementById('reservation-coupon')
+      const flightCoupon = document.getElementById('flight-coupon')
+      const couponDescription = modal.getElementsByClassName('coupon-description')[0]
 
+      reservationCoupon.onclick = () => {
+        if(!reservationCoupon.classList.contains('selected')) {
+          reservationCoupon.classList.add('selected')
+          flightCoupon.classList.remove('selected')
+          couponDescription.innerText = ''
+          couponType = 'RESERVATION'
+        }
+      }
+      flightCoupon.onclick = () => {
+        if(!flightCoupon.classList.contains('selected')) {
+          flightCoupon.classList.add('selected')
+          reservationCoupon.classList.remove('selected')
+          couponDescription.innerText = ''
+          couponType = 'FLIGHT'
+        }
+      }
+      
+      if(dateTarget.default_coupon_type === 'reservation') {
+        reservationCoupon.classList.add('selected')
+        couponDescription.innerText = 'Both of you are located in the same city, we will offer you a free reservation.'
+      } else {
+        flightCoupon.classList.add('selected')
+        couponDescription.innerText = 'You two are in different cities, we will offer you a flight coupon.'
+      }
 
+      firstDate.classList.remove('d-none')
+      couponTypeCtn.classList.remove('d-none')
     }
   })
-  function startDate(evt, id, username, age, location, avatar, created_on, target_dated, current_user_dated) {
+  function startDate(evt, id, username, age, location, avatar, created_on, target_dated, current_user_dated, current_user_location) {
     dateTarget = {
       id,
       username,
@@ -189,19 +232,20 @@
       location,
       avatar,
       created_on,
-      target_dated,
-      current_user_dated
+      coupon_available: target_dated === 'False' && current_user_dated === 'False',
+      default_coupon_type: location === current_user_location ? 'reservation' : 'flight'
     }
     return
   }
   function sendDate() {
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value
-    console.log(csrfToken)
+    const dateLocation = document.getElementById('date-location').value
+    console.log(dateTime.getTime(), dateLocation.value)
     data = {
       targetId: dateTarget.id,
-      datetime: Date.now(),
-      location: "random location",
-      couponType: "RESERVATION"
+      datetime: dateTime.getTime(),
+      location: dateLocation,
+      couponType,
     }
     return fetch("http://127.0.0.1:8000/api/start_date/", {
       method: "POST",
@@ -210,6 +254,10 @@
         'content-type': 'application/json',
         'X-CSRFToken': csrfToken,
       }),
+    }).then(res => {
+      if(res.status === 204) {
+        $('#startDateModal').modal('hide')
+      }
     })
   }
 </script>

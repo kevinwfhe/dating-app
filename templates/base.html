@@ -11,6 +11,23 @@
       href="/static/temp/favicon.png"
     />
     {% block css %}{% endblock %}
+    <!-- Popperjs -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <!-- Tempus Dominus JavaScript -->
+    <script
+      src="https://cdn.jsdelivr.net/gh/Eonasdan/tempus-dominus@master/dist/js/tempus-dominus.js"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Tempus Dominus Styles -->
+    <link
+      href="https://cdn.jsdelivr.net/gh/Eonasdan/tempus-dominus@master/dist/css/tempus-dominus.css"
+      rel="stylesheet"
+      crossorigin="anonymous"
+    />
     <link
       href="https://fonts.googleapis.com/css?family=Quicksand:400,500,700&display=swap"
       rel="stylesheet"
@@ -21,6 +38,7 @@
       integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay"
       crossorigin="anonymous"
     />
+    <script src="https://kit.fontawesome.com/0a6721f0f8.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="/static/css/style.css?{% now "U" %}"
     type="text/css" />
     <link
@@ -86,8 +104,7 @@
       >
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a
-              class="{% if new_wink%}new-engagement{%endif%} nav-link"
+            <a class="{% if new_wink%}new-engagement{%endif%} nav-link"
               ><p>Matched</p></a
             >
           </li>

@@ -2032,3 +2032,52 @@ label {
   border: none;
   padding: 8px 20px;
 }
+
+.first-date {
+  margin-bottom: 15px;
+  color: #E94057;
+}
+
+.coupon-type-ctn {
+  border: 1px solid #E94057;
+  padding: 2px;
+  border-radius: 6px;
+}
+
+.coupon-type-ctn > div{
+  background-color: #D9D9D9;
+}
+
+.coupon-type {
+  background-color: #D9D9D9;
+  color: white;
+  width: 50%;
+  text-align: center;
+  border-radius: 5px;
+  user-select: none;
+  cursor: pointer;
+  padding: 5px 0;
+}
+
+.coupon-type.selected {
+  background-color: #E94057;
+}
+
+.coupon-description {
+  color: #E94057;
+  margin-top: 8px;
+  margin-bottom: 20px;
+}
+
+.coupon-wrapper {
+  padding: 0 5px;
+}
+
+#startDateModalLabel {
+  color: #E94057;
+}
+
+#startDateModal label {
+  color: #E94057;
+  font-size: 20px;
+}
