@@ -100,8 +100,9 @@ function send_wink_grid_link(receiver_id) {
           "</div></div>"
       );
       $(".toast").toast("show", {
-        autohide: false,
+        autohide: true,
       });
+      location.assign('/match/')
     },
   });
 }
@@ -543,31 +544,6 @@ if ($("#page-ref").data("page-ref") == "public_profile") {
       $(event.target).parent().css("display", "none");
     }
   }
-
-  $(function () {
-    // Ensure correct date format
-    var dateAndTimeAr = $(".standard-form input[name=birth_date]")
-      .val()
-      .split(" ");
-    var dateAr = dateAndTimeAr[0].split("-");
-    if (
-      typeof dateAr[2] !== "undefined" &&
-      typeof dateAr[1] !== "undefined" &&
-      typeof dateAr[0] !== "undefined"
-    ) {
-      var newDate = dateAr[2] + "/" + dateAr[1] + "/" + dateAr[0];
-      $(".standard-form input[name=birth_date]").val(newDate);
-    }
-
-    // Initiliase date picker, limiting user to DoB over 18 years ago
-    var min_date = new Date();
-    min_date.setFullYear(min_date.getFullYear() - 18);
-
-    $("#id_birth_date").datepicker({
-      format: "dd/mm/yyyy",
-      endDate: min_date,
-    });
-  });
 }
 
 // Member profile page

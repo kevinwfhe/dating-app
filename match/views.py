@@ -177,3 +177,19 @@ class StartDate(APIView):
       
       else:
         return JsonResponse({"message": "Please make sure your inputs are valid"})
+
+class AcceptDate(APIView):
+  authentication_classes = [authentication.SessionAuthentication]
+  permission_classes = [permissions.IsAuthenticated]
+
+  def post(self, request):
+      target = request.user
+      date_id = request.data['dateId'] 
+      date = Date.objects.get(pk=date_id)
+      if date.target == target:
+          date.is_accepted = True
+          date.save()
+          return HttpResponse(status=204)
+      
+      else:
+        return JsonResponse({"message": "You don't have access to do this."})

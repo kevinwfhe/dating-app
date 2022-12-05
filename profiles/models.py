@@ -48,22 +48,7 @@ class Profile(models.Model):
     avatar = models.ImageField(upload_to=image_filename, blank=True)
     image = models.ImageField(upload_to=image_filename, blank=True)
     has_dated = models.BooleanField(default=False, blank=False)
-
-    # Additional info that might be used in the futuer
-    # hair_length = models.CharField(choices=HAIR_LENGTH, default="LONG", blank=False, max_length=100)
-    # ethnicity = models.CharField(choices=ETHNICITY, default="WHITE", blank=False, max_length=100)
-    # education = models.CharField(choices=EDUCATION, default="HIGH SCHOOL", blank=False, max_length=100)
-    # height = models.DecimalField(max_digits=10, default=180.34, decimal_places=2)
-    # hair_colour = models.CharField(choices=HAIR_COLOUR, default="BLACK", blank=False, max_length=10)
-    # body_type = models.CharField(choices=BODY_TYPE, default="AVERAGE", blank=False, max_length=15)
-    # children = models.BooleanField(default=False)
-    # citylat = models.DecimalField(max_digits=9, decimal_places=6, default='-2.0180319')
-    # citylong = models.DecimalField(max_digits=9, decimal_places=6, default='52.5525525')
-    # birth_date = models.DateField(null=True, default='1990-01-01', blank=True)
-    # is_premium = models.BooleanField(default=False)
     is_verified = models.CharField(choices=APPROVAL, default="TO BE APPROVED", blank=False, max_length=14)
-    
-    # objects = LocationManager()
 
 
     
