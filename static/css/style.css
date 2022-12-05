@@ -1960,7 +1960,8 @@ label {
 .modal.steps #step-input {
   min-height: 170px;
 }
-.modal.steps #step-input .btn {
+.modal.steps #step-input .btn,
+#update-interests-ctn .btn {
   border-radius: 20px;
   height: 28px;
   padding: 5px 8px;
@@ -1975,8 +1976,19 @@ label {
   border: 2px solid transparent;
 }
 
-.modal.steps #step-input .btn-check:checked+.btn {
+.modal.steps #step-input .btn-check:checked+.btn,
+#update-interests-ctn .btn-check:checked+.btn {
   border: 2px solid #BC7BE4;
+}
+
+#update-interests-ctn {
+  border: 1px solid rgb(209,210,211);
+  border-radius: 0.375rem;
+  padding-left: 10px;
+}
+
+#update-interests-ctn div {
+  display: inline-block;
 }
 
 .modal.steps #step-input .btn::before {
@@ -2007,6 +2019,9 @@ label {
   width: 64px;
   border-radius: 50%;
   object-fit: cover;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .profile-avatar + button {
@@ -2080,4 +2095,20 @@ label {
 #startDateModal label {
   color: #E94057;
   font-size: 20px;
+}
+
+.date-details .date-description,
+.date-details label {
+  color: #E94057;
+  font-size: 16px;
+}
+
+.date-details label {
+  width: 100px;
+  margin: 0;
+  margin-top: 8px;
+}
+
+.date-details .date-text {
+  font-size: 16px;
 }

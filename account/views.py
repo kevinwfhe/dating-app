@@ -14,6 +14,7 @@ from profiles.forms import EditProfileForm, ProfileForm, PersonalInformationForm
 from rest_framework.views import APIView
 from rest_framework import authentication, permissions
 import os
+from profiles.models import Interest
 
 # Account page for users to see and change Stripe and profile account details
 @login_required
@@ -38,12 +39,17 @@ def public_profile(request):
         avatar = profile.avatar
         profile_form = ProfileForm(instance=request.user.profile)
         profile_image = profile.image
+        profile_interests = profile.interests.all()
+        available_interests = Interest.objects.all()
+        print(profile_interests)
 
     context = {
         'page_ref' : 'public_profile',
         'profile_form' : profile_form,
         'avatar' : avatar,
         'profile_image' : profile_image,
+        'profile_interests': profile_interests,
+        'available_interests': available_interests,
     }
     
     return render(request, 'public_profile.html', context)
@@ -55,7 +61,6 @@ def personal_information(request):
         personal_info_form = PersonalInformationForm(request.POST)
         profile = Profile.objects.get(user=request.user)
         profile.gender = personal_info_form.data['gender']
-        print(profile.gender)
         profile.save()
     else:
       personal_info_form = PersonalInformationForm(initial={'gender': request.user.profile.gender})

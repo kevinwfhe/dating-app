@@ -83,7 +83,7 @@
             </li>
             <li class="nav-item nav-icon">
               {% if request.user.id %}
-              <a class="nav-link" href="{% url 'management' %}"
+              <a class="nav-link" href="{% url 'public_profile' %}"
                 ><img src="/static/temp/account.svg" />
                 <p>Account</p></a
               >
@@ -112,7 +112,7 @@
             <a class="nav-link" href="{% url 'index' %}"><p>HOME</p></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'management' %}">ACCOUNT</a>
+            <a class="nav-link" href="{% url 'public_profile' %}">ACCOUNT</a>
           </li>
         </ul>
       </nav>

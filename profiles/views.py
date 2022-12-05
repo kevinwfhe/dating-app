@@ -254,3 +254,15 @@ class UploadImage(APIView):
       profile.image = image
       profile.save()
       return HttpResponse(status=204)
+
+class UpdateInterests(APIView):
+  authentication_classes = [authentication.SessionAuthentication]
+  permission_classes = [permissions.IsAuthenticated]
+
+  def post(self, request):
+      profile = Profile.objects.get(user=request.user)
+      profile.interests.clear()
+      for i in request.data["interests"]:
+          profile.interests.add(i)
+      profile.save()
+      return HttpResponse(status=204)
