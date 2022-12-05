@@ -27,6 +27,7 @@ lazy-object-proxy==1.4.0
 Markdown==3.4.1
 MarkupSafe==1.1.1
 mccabe==0.6.1
+mysqlclient==2.1.1
 parso==0.1.1
 pbr==5.2.1
 Pillow==8.4.0
