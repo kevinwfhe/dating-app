@@ -79,7 +79,7 @@
 {% endblock %} {% block js %}
 <script>
   function delete_account() {
-    fetch("http://127.0.0.1:8000/api/delete_account/").then(() => {
+    fetch("http://dating-app-lb-1286765826.us-east-1.elb.amazonaws.com/api/delete_account/").then(() => {
       window.location.href = "/";
     })
   }

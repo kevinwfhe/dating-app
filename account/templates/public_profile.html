@@ -90,7 +90,7 @@
     const reader = new FileReader();
     reader.onload = (e) => {
       imageEl.src = e.target.result
-      fetch("http://127.0.0.1:8000/api/upload_image/", {
+      fetch("http://dating-app-lb-1286765826.us-east-1.elb.amazonaws.com/api/upload_image/", {
         method: "POST",
         body: JSON.stringify({image: e.target.result}),
         headers: new Headers({
@@ -112,7 +112,7 @@
     const reader = new FileReader();
     reader.onload = (e) => {
       avatarEl.src = e.target.result
-      fetch("http://127.0.0.1:8000/api/upload_avatar/", {
+      fetch("http://dating-app-lb-1286765826.us-east-1.elb.amazonaws.com/api/upload_avatar/", {
         method: "POST",
         body: JSON.stringify({avatar: e.target.result}),
         headers: new Headers({
@@ -131,7 +131,7 @@
     const data = {
       interests,
     }
-    fetch("http://127.0.0.1:8000/api/update_interests/", {
+    fetch("http://dating-app-lb-1286765826.us-east-1.elb.amazonaws.com/api/update_interests/", {
       method: "POST",
       body: JSON.stringify(data),
       headers: new Headers({

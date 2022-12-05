@@ -343,7 +343,7 @@
       location: dateLocation,
       couponType,
     };
-    return fetch("http://127.0.0.1:8000/api/start_date/", {
+    return fetch("http://dating-app-lb-1286765826.us-east-1.elb.amazonaws.com/api/start_date/", {
       method: "POST",
       body: JSON.stringify(data),
       headers: new Headers({
@@ -357,7 +357,7 @@
     });
   }
   function acceptDate(event, dateId) {
-    return fetch("http://127.0.0.1:8000/api/accept_date/", {
+    return fetch("http://dating-app-lb-1286765826.us-east-1.elb.amazonaws.com/api/accept_date/", {
       method: "POST",
       body: JSON.stringify({
         dateId,
