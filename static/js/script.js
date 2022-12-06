@@ -1,7 +1,7 @@
 // Sitewide
 // ********
 $(".toast").toast("show", {
-  autohide: false,
+  autohide: true,
 });
 
 // Set CSFR token for ajax
@@ -50,7 +50,7 @@ function send_message() {
             "</div></div>"
         );
         $(".toast").toast("show", {
-          autohide: false,
+          autohide: true,
         });
       }
     },
@@ -293,7 +293,6 @@ if ($("#page-ref").data("page-ref") == "home") {
   // Function to remove draggable card and send wink/reject when relevant
   // option is selected
   function send_wink_draggable(receiver_id, wink = false) {
-    console.log(receiver_id, wink);
     var left_length = $(window).width() / 2;
     // If dropped to wink area
     if (wink == true) {
@@ -323,7 +322,7 @@ if ($("#page-ref").data("page-ref") == "home") {
               "</div></div>"
           );
           $(".toast").toast("show", {
-            autohide: false,
+            autohide: true,
           });
         },
       });
@@ -368,7 +367,7 @@ if ($("#page-ref").data("page-ref") == "home") {
             "</div></div>"
         );
         $(".toast").toast("show", {
-          autohide: false,
+          autohide: true,
         });
       },
     });

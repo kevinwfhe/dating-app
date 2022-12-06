@@ -218,7 +218,15 @@ class InitialProfile(APIView):
         profile = Profile.objects.get(user=request.user)
         profile.age = request.data["age"]
         profile.location = request.data["loc"]
-        profile.gender = request.data["gender"]
+        gender = None
+        if request.data["gender"] == 'male':
+          gender = 'MALE'
+        elif request.data["gender"] == 'female':
+          gender = 'FEMALE'
+        else:
+          gender = 'OTHER'
+        profile.gender = gender
+
         profile.relationship_status = request.data["relationship_status"]
         for i in request.data["interests"]:
           profile.interests.add(i)

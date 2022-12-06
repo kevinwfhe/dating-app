@@ -48,6 +48,7 @@ def winks(request):
     for wink in winks:
       created_on = arrow.get(wink.created_on)
       wink.created_on = created_on.humanize()
+      wink.sender_interests = wink.sender.profile.interests.all()
     winks_paginated = Paginator(winks, 6)
 
     page = request.GET.get('page')

@@ -53,10 +53,13 @@
                         </div>
                         <div class="col-4 time p-0 secondary-text text-end">{{wink.created_on}}</div>
                         </div>
+                        <div class="pt-3 ps-3">
+                          <span style="color: #E94057">Interests:  </span>
+                          {% for interest in wink.sender_interests %}
+                          <span>{{interest.name}};</span>
+                          {% endfor %}
+                        </div>
                         <div class="row ops pt-3">
-                          <a href="{% url 'member_profile' wink.sender.id %}" class="col p-0 mx-2">
-                            <button class="pink-btn  w-100" >Details</button>
-                          </a>
                           <a class="col p-0 mx-2">
                             <button onclick="send_wink_grid_link({{wink.sender.id}})" class="pink-btn  w-100">Wink back</button>
                           </a>
