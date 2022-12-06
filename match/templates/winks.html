@@ -65,40 +65,11 @@
                           </a>
                         </div>
                       </div>
-                      <!-- <div class="row">
-                          <div class="wide-user-details col-xs-12 col-sm-6">
-                              {% if wink.sender.profile.avatar %}
-                              <div class=" card-img" style="background-image: url({{ MEDIA_URL }}{{wink.sender.profile.avatar}})"></div>
-                              {% else %}
-                              <div class=" card-img" style="background-image: url({% static 'temp/profile-placeholder.png' %})"></div>
-                              {% endif %}
-                              <div>
-                                  <div class="username-container">
-                                      <p class="card-username">{{wink.sender.username}}</p>
-                                      <p class="card-distance">4 Miles Away</p>
-                                      <p class="card-age">{{wink.sender.age}}69</p>
-                                  </div>
-                                  <div class="wide-date-container">
-                                      <p>{{wink.created_on}}</p>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="col-xs-12 col-sm-6 wide-button-container">
-                              <a href="{% url 'member_profile' wink.sender.id %}" class="btn standard-button">VISIT USER</a>
-                              <button onclick="send_wink_grid_link({{wink.sender.id}})" class="btn standard-button">WINK BACK</button>
-                          </div>
-                      </div> -->
-                      <!--Change from a link-->
               </div>
               {% endfor %} {% else %}
-              <div class="card-container col-lg-12 message-box">
-                  <div class="card">
-                      <div class="message-box-content message-box-empty" style="overflow: auto;">
-                          <div>
-                              <h3>No Winks :(</h3>
-                              <a href="{% url 'index' %}" class="btn standard-button">START THE CONVERSATION YOURSELF</a>
-                          </div>
-                      </div>
+              <div class="card-container col-lg-12">
+                  <div class="ps-2" style="color: white">
+                    No Winks
                   </div>
               </div>
               {% endif %}
