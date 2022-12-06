@@ -95,6 +95,7 @@ DATABASES = {
 }
 
 
+SECURE_CROSS_ORIGIN_OPENER_POLICY = None
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
