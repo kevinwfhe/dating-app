@@ -87,8 +87,8 @@
         </div>
         <p class="card-distance">{{profile.location}}</p>
         <div class="row interaction-container">
-            <div class="col-4 grid-three-link"><i onclick="send_wink_draggable({{profile.user.id}}, false)" class="far fa-times-circle grid-times"></i></div>
-            <div class="col-4 grid-three-link"><a href="{% url 'member_profile' profile.user.id %}"><i class="far fa-user grid-view"></i></a></div>
+            <div class="col-4 grid-three-link me-5"><i onclick="send_wink_draggable({{profile.user.id}}, false)" class="far fa-times-circle grid-times"></i></div>
+            <!-- <div class="col-4 grid-three-link"><a href="{% url 'member_profile' profile.user.id %}"><i class="far fa-user grid-view"></i></a></div> -->
             <div class="col-4 grid-three-link"><i onclick="send_wink_draggable({{profile.user.id}}, true)" class="far fa-smile-wink grid-wink"></i></div>
         </div>
     </div>
