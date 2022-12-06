@@ -26,9 +26,18 @@ class Date(models.Model):
     location = models.CharField(max_length=100, default='', blank=False)
     is_first_date = models.BooleanField(default=False, blank=False)
     coupon_type = models.CharField(choices=COUPON_TYPE, default=None, max_length=13, blank=False, null=True)
+    coupon = models.ForeignKey('Coupon', on_delete=models.CASCADE, null=True, blank=True, default=None)
 
 class Match(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner')
     target = models.ForeignKey(User, on_delete=models.CASCADE, related_name='target')
     created_on = models.DateTimeField(auto_now_add=True)
     date = models.ForeignKey(Date, on_delete=models.CASCADE, default=None, null=True, blank=True)
+
+class Coupon(models.Model):
+    TYPE = (
+        ("RESERVATION", "Reservation"),
+        ("FLIGHT", "Flight"),
+    )
+    uuid = models.UUIDField()
+    type = models.CharField(choices=TYPE, default="RESERVATION", max_length=20, blank=False)

@@ -1,7 +1,8 @@
+import uuid
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .models import Date, Winks, Reject, Match
+from .models import Date, Winks, Reject, Match, Coupon
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib.auth.models import User
@@ -187,8 +188,13 @@ class AcceptDate(APIView):
       target = request.user
       date_id = request.data['dateId'] 
       date = Date.objects.get(pk=date_id)
+      print(date.coupon_type)
       if date.target == target:
           date.is_accepted = True
+          if date.coupon_type:
+            coupon = Coupon(type=date.coupon_type, uuid=uuid.uuid4())
+            coupon.save()
+            date.coupon = coupon
           date.save()
           return HttpResponse(status=204)
       

@@ -180,6 +180,22 @@
                   <label>Location</label>
                   <span class="date-text">{{ match.date.location }}</span>
                 </div>
+                {% if match.date.coupon %}
+                <div>
+                  <label>Coupon Code</label>
+                  <span class="date-text">{{ match.date.coupon.uuid }}</span>
+                </div>
+                <div>
+                  <label>Coupon Type</label>
+                  <span class="date-text">
+                    {% if match.date.coupon.type == 'RESERVATION' %}
+                    Free Reservation
+                    {% else %}
+                    Flight Coupon
+                    {% endif %}
+                  </span>
+                </div>
+                {% endif %}
               </div>
               {% if match.date and not match.date.is_accepted %}
               <div class="row ops pt-3">
@@ -295,14 +311,17 @@
       };
 
       if (dateTarget.default_coupon_type === "reservation") {
+        couponType = "RESERVATION";
         reservationCoupon.classList.add("selected");
         couponDescription.innerText =
           "Both of you are located in the same city, we will offer you a free reservation.";
       } else {
+        couponType = "FLIGHT";
         flightCoupon.classList.add("selected");
         couponDescription.innerText =
           "You two are in different cities, we will offer you a flight coupon.";
       }
+
 
       firstDate.classList.remove("d-none");
       couponTypeCtn.classList.remove("d-none");
